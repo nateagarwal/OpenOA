@@ -65,11 +65,11 @@ class Project_Engie(PlantData):
         self._scada.df.drop_duplicates(subset = ['time', 'ID'], inplace=True)
 
         # Convert local to UTC time
-        #self._scada.df['time_utc'] = self.dst_shifter(dt= self._scada.df['time'], num_hours = -2, dst=True, dst_subset= 'French') # This function is defined below prepare
-        #self._scada.df['time'] = self._scada.df['time_utc']
+        self._scada.df['time_utc'] = self.dst_shifter(dt= self._scada.df['time'], num_hours = -2, dst=True, dst_subset= 'French') # This function is defined below prepare
+        self._scada.df['time'] = self._scada.df['time_utc']
 
         # Remove duplicated timestamps and turbine id
-        #self._scada.df.drop_duplicates(subset = ['time', 'ID'], inplace=True)
+        self._scada.df.drop_duplicates(subset = ['time', 'ID'], inplace=True)
 
         # Set datetime as index
         self._scada.df.set_index('time',inplace=True,drop=False) 
@@ -119,16 +119,16 @@ class Project_Engie(PlantData):
         self._meter.df.drop_duplicates(subset=['time'], inplace=True, keep=False)
 
         # Convert local to UTC time:
-        #self._meter.df['time_utc'] = self.dst_shifter(dt= self._meter.df['time'], num_hours = -2, dst=True, dst_subset= 'French')
-        #self._meter.df['time'] = self._meter.df['time_utc'] 
+        self._meter.df['time_utc'] = self.dst_shifter(dt= self._meter.df['time'], num_hours = -2, dst=True, dst_subset= 'French')
+        self._meter.df['time'] = self._meter.df['time_utc'] 
         self._meter.df.set_index('time',inplace=True,drop=False) # Set datetime as index
-        #self._meter.df.drop_duplicates(subset=['time'], inplace=True, keep=False) 
+        self._meter.df.drop_duplicates(subset=['time'], inplace=True, keep=False) 
 
         #remove extrema values
         self._meter.df = self._meter.df[self._meter.df['energy_kwh']>0]
 
         #Drop fields we don't need
-        #self._meter.df.drop(['time_utc'], axis=1, inplace=True)
+        self._meter.df.drop(['time_utc'], axis=1, inplace=True)
 
         #####################################
         # Availability and Curtailment Data #
@@ -138,8 +138,8 @@ class Project_Engie(PlantData):
         self._curtail.load(self._path, "engie_avail_curt", "csv") # Load availability curtailment data
         self._curtail.df['time'] = pd.to_datetime(self._curtail.df['time']) #Convert time field to datetime object
         self._curtail.df.drop_duplicates(subset=['time'], inplace=True, keep=False)
-        #self._curtail.df['time_utc'] = self.dst_shifter(dt= self._curtail.df['time'], num_hours = -2, dst=True, dst_subset= 'French') # convert from local time to UTC
-        #self._curtail.df.drop_duplicates(subset=['time'], inplace=True, keep=False)
+        self._curtail.df['time_utc'] = self.dst_shifter(dt= self._curtail.df['time'], num_hours = -2, dst=True, dst_subset= 'French') # convert from local time to UTC
+        self._curtail.df.drop_duplicates(subset=['time'], inplace=True, keep=False)
         self._curtail.df.set_index('time', inplace=True, drop=False)
         
         self._curtail.df.dropna(inplace=True)
